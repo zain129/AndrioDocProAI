@@ -66,7 +66,7 @@ The platform supports multiple document types, semantic search using vector embe
 | Build Tool | Gradle Kotlin DSL |
 | Database | PostgreSQL |
 | Vector Store | pgvector |
-| AI Provider | OpenAI |
+| AI Provider | Hugging Face |
 | PDF Parser | Apache PDFBox |
 | Document Parser | Apache POI |
 | Security | JWT |
@@ -81,18 +81,17 @@ The platform supports multiple document types, semantic search using vector embe
 andriodocpro-ai
 │
 ├── src
-│   ├── main
-│   │   ├── kotlin
-│   │   └── resources
-│   └── test
+│   └── main
+│       ├── kotlin
+│       └── resources
 │
 ├── docker
-├── docs
-├── scripts
 ├── build.gradle.kts
 ├── settings.gradle.kts
 └── README.md
 ```
+
+> **Note:** This public repository is the Community Edition — the internal test suite and API-testing collection are kept in the private development repo and are not published here.
 
 ---
 
@@ -152,7 +151,7 @@ Future support:
  Semantic Search
         │
         ▼
- OpenAI GPT
+ Hugging Face LLM
         │
         ▼
  AI Response
@@ -195,6 +194,6 @@ Future support:
 
 ## License
 
-Copyright © Andrisol Technologies
+Licensed under the [MIT License](LICENSE).
 
-All rights reserved.
+Copyright © 2026 Andrisol Technologies
