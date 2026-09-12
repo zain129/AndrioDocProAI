@@ -128,33 +128,35 @@ Future support:
 ## High-Level Architecture
 
 ```
-                Upload Document
-                      │
-                      ▼
-              Document Processing
-                      │
-        ┌─────────────┴─────────────┐
-        │                           │
-        ▼                           ▼
- Text Extraction             Metadata Storage
-        │
-        ▼
- Chunk Generation
-        │
-        ▼
- Embedding Generation
-        │
-        ▼
- PostgreSQL + pgvector
-        │
-        ▼
- Semantic Search
-        │
-        ▼
- Hugging Face LLM
-        │
-        ▼
- AI Response
+        Upload Document                       User Question
+              │                                      │
+              ▼                                      ▼
+      Document Processing                     Embed Question
+              │
+  ┌───────────┴───────────┐
+  ▼                        ▼
+Text Extraction      Metadata Storage
+  │
+  ▼
+Chunk Generation
+  │
+  ▼
+Embedding Generation
+  │
+  ▼
+              PostgreSQL + pgvector  ◄─────────────────┘
+                       │
+                       ▼
+               Semantic Search (top-K)
+                       │
+                       ▼
+             Retrieved Chunks + Sources
+                       │
+                       ▼
+                 Hugging Face LLM
+                       │
+                       ▼
+             AI Answer + Citations
 ```
 
 ---
