@@ -1,0 +1,6 @@
+applicationType: default
+defaultPackage: com.andriosol
+testFramework: spock
+sourceLanguage: kotlin
+buildTool: gradle_kotlin
+features: [app-name, data, data-jdbc, gradle, http-client-test, jdbc-hikari, json-schema, json-schema-validation, kotlin, kotlin-application, ksp, logback, management, micronaut-aot, micronaut-build, micronaut-configuration-validation-gradle-plugin, micronaut-http-validation, netty-server, openapi, postgres, properties, readme, security-jwt, security-processor, serialization-jackson, shade, spock, static-resources, test-resources, validation]

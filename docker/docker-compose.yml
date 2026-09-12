@@ -1,0 +1,25 @@
+name: andriodocpro
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: andriodocpro-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-andriodocpro}
+      POSTGRES_USER: ${POSTGRES_USER:-andriodocpro}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-andriodocpro}
+    ports:
+      # Host port 55432 to avoid clashing with native PostgreSQL installs (5432/5433)
+      - "${POSTGRES_PORT:-55432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./initdb:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-andriodocpro} -d ${POSTGRES_DB:-andriodocpro}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  pgdata:

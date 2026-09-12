@@ -1,0 +1,18 @@
+databaseChangeLog:
+  - changeSet:
+      id: 006-add-user-role
+      author: andriodocpro
+      changes:
+        - addColumn:
+            tableName: users
+            columns:
+              - column:
+                  name: role
+                  type: varchar(20)
+                  defaultValue: USER
+                  constraints:
+                    nullable: false
+        # The seeded bootstrap account (app.security.username, default 'admin') is promoted
+        # to ADMIN so it retains full visibility after this migration.
+        - sql:
+            sql: UPDATE users SET role = 'ADMIN' WHERE username = 'admin'

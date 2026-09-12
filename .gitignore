@@ -1,0 +1,23 @@
+Thumbs.db
+.DS_Store
+.gradle
+build/
+target/
+out/
+.micronaut/
+.idea
+*.iml
+*.ipr
+*.iws
+.project
+.settings
+.classpath
+.factorypath
+
+# Local-only Gradle/Kotlin caches
+gradle-home/
+.kotlin/
+
+# Community edition: dev-only tooling excluded from the public repo
+docs/
+src/test/

@@ -1,0 +1,60 @@
+databaseChangeLog:
+  # Requires the pgvector extension (created by docker/initdb/01-extensions.sql).
+  - changeSet:
+      id: 002-create-document-chunks
+      author: andriodocpro
+      changes:
+        - createTable:
+            tableName: document_chunks
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: document_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: chunk_index
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: content
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamptz
+              - column:
+                  name: updated_at
+                  type: timestamptz
+        # pgvector column added via raw SQL (Liquibase has no native vector type).
+        # 384 dimensions matches sentence-transformers/all-MiniLM-L6-v2 and the local fallback.
+        - sql:
+            sql: ALTER TABLE document_chunks ADD COLUMN embedding vector(384)
+        - addForeignKeyConstraint:
+            constraintName: fk_document_chunks_document
+            baseTableName: document_chunks
+            baseColumnNames: document_id
+            referencedTableName: documents
+            referencedColumnNames: id
+            onDelete: CASCADE
+        - addUniqueConstraint:
+            tableName: document_chunks
+            columnNames: document_id, chunk_index
+            constraintName: uq_document_chunks_doc_idx
+        - createIndex:
+            indexName: idx_document_chunks_document_id
+            tableName: document_chunks
+            columns:
+              - column:
+                  name: document_id
+        # HNSW index for approximate nearest-neighbour cosine search.
+        - sql:
+            sql: CREATE INDEX idx_document_chunks_embedding ON document_chunks USING hnsw (embedding vector_cosine_ops)

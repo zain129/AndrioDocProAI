@@ -1,0 +1,19 @@
+# Active only when MICRONAUT_ENVIRONMENTS=local.
+# Points the app at the Postgres started by docker/docker-compose.yml.
+# Because a full datasource URL is present here, Micronaut Test Resources
+# is bypassed for this environment (the default/test envs still use it).
+# Override any value with the standard env vars, e.g. DATASOURCES_DEFAULT_PASSWORD.
+micronaut:
+  server:
+    # 8080 is occupied by a native Apache httpd on the dev machine
+    port: 8085
+
+datasources:
+  default:
+    url: jdbc:postgresql://localhost:55432/andriodocpro
+    username: andriodocpro
+    password: andriodocpro
+
+rag:
+  huggingface:
+    api-token: ${HF_TOKEN:huggingfacetoken}

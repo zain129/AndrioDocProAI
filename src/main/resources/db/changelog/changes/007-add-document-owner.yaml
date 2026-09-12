@@ -1,0 +1,35 @@
+databaseChangeLog:
+  - changeSet:
+      id: 007-add-document-owner
+      author: andriodocpro
+      changes:
+        - addColumn:
+            tableName: documents
+            columns:
+              - column:
+                  name: owner_id
+                  type: uuid
+        # Backfill pre-existing documents (uploaded before ownership existed) to the
+        # bootstrap admin account. On a fresh database both tables are empty at this
+        # point, so this is a no-op there.
+        - sql:
+            sql: >-
+              UPDATE documents SET owner_id = (SELECT id FROM users WHERE username = 'admin')
+              WHERE owner_id IS NULL
+        - addNotNullConstraint:
+            tableName: documents
+            columnName: owner_id
+            columnDataType: uuid
+        - addForeignKeyConstraint:
+            constraintName: fk_documents_owner
+            baseTableName: documents
+            baseColumnNames: owner_id
+            referencedTableName: users
+            referencedColumnNames: id
+            onDelete: CASCADE
+        - createIndex:
+            indexName: idx_documents_owner_id
+            tableName: documents
+            columns:
+              - column:
+                  name: owner_id

@@ -1,0 +1,62 @@
+databaseChangeLog:
+  - changeSet:
+      id: 008-create-document-shares
+      author: andriodocpro
+      changes:
+        - createTable:
+            tableName: document_shares
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: document_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  # Access is granted by email match, not by a user_id FK, so sharing
+                  # with someone who hasn't registered yet still takes effect the moment
+                  # they do (no backfill step needed when they sign up).
+                  name: email
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: shared_by_user_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamptz
+              - column:
+                  name: updated_at
+                  type: timestamptz
+        - addForeignKeyConstraint:
+            constraintName: fk_document_shares_document
+            baseTableName: document_shares
+            baseColumnNames: document_id
+            referencedTableName: documents
+            referencedColumnNames: id
+            onDelete: CASCADE
+        - addForeignKeyConstraint:
+            constraintName: fk_document_shares_shared_by
+            baseTableName: document_shares
+            baseColumnNames: shared_by_user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            onDelete: CASCADE
+        - addUniqueConstraint:
+            tableName: document_shares
+            columnNames: document_id, email
+            constraintName: uq_document_shares_doc_email
+        - createIndex:
+            indexName: idx_document_shares_email
+            tableName: document_shares
+            columns:
+              - column:
+                  name: email

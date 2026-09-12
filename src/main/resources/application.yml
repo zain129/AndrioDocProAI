@@ -1,0 +1,81 @@
+micronaut:
+  application:
+    name: andriodocpro-ai
+  server:
+    max-request-size: 30MB
+    multipart:
+      max-file-size: 25MB
+  router:
+    static-resources:
+      jsonschema:
+        mapping: /schemas/**
+        paths: classpath:META-INF/schemas
+  security:
+    authentication: bearer
+    endpoints:
+      login:
+        enabled: true
+      oauth:
+        enabled: true
+    token:
+      jwt:
+        signatures:
+          secret:
+            generator:
+              secret: ${JWT_GENERATOR_SIGNATURE_SECRET:pleaseChangeThisSecretForANewOne}
+        generator:
+          refresh-token:
+            # signs the long-lived refresh tokens (validated + revocable via DB)
+            secret: ${JWT_REFRESH_TOKEN_SECRET:pleaseChangeThisRefreshSecretNow}
+      generator:
+        access-token:
+          # short-lived, stateless: 1 hour
+          expiration: ${JWT_ACCESS_TOKEN_EXPIRATION:3600}
+
+# health stays open for monitoring/load balancers; all other endpoints need a token
+endpoints:
+  health:
+    sensitive: false
+
+# Seeds a default admin account on first startup (see UserSeeder). After that, accounts
+# live in the users table (bcrypt-hashed passwords) via /register and normal login.
+app:
+  frontend-base-url: ${FRONTEND_BASE_URL:http://localhost:5173}
+  security:
+    username: ${APP_USERNAME:admin}
+    password: ${APP_PASSWORD:changeme}
+    admin-email: ${APP_ADMIN_EMAIL:admin@andriodocpro.local}
+    password-reset:
+      expiry-minutes: ${PASSWORD_RESET_EXPIRY_MINUTES:30}
+
+datasources:
+  default:
+    db-type: postgres
+    dialect: POSTGRES
+    schema-generate: NONE
+    driver-class-name: org.postgresql.Driver
+
+liquibase:
+  datasources:
+    default:
+      change-log: classpath:db/changelog/db.changelog-master.yaml
+
+# Retrieval-Augmented Generation settings.
+rag:
+  chunk:
+    size: 900            # characters per chunk
+    overlap: 200         # overlap between consecutive chunks
+  retrieval:
+    top-k: 5             # chunks fed to the LLM as context
+  embedding:
+    provider: ${RAG_EMBEDDING_PROVIDER:huggingface}   # local | huggingface
+    dimensions: 384                              # must match the vector(384) column
+    model: sentence-transformers/all-MiniLM-L6-v2
+  llm:
+    provider: ${RAG_LLM_PROVIDER:huggingface}          # local | huggingface
+    model: meta-llama/Llama-3.3-70B-Instruct
+    max-tokens: 512
+    temperature: 0.2
+  huggingface:
+    chat-url: https://router.huggingface.co/v1/chat/completions
+    embeddings-url: https://router.huggingface.co/hf-inference/models

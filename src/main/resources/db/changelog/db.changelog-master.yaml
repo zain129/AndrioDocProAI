@@ -1,0 +1,17 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/changes/001-create-documents.yaml
+  - include:
+      file: db/changelog/changes/002-create-document-chunks.yaml
+  - include:
+      file: db/changelog/changes/003-create-refresh-tokens.yaml
+  - include:
+      file: db/changelog/changes/004-create-users.yaml
+  - include:
+      file: db/changelog/changes/005-create-password-reset-tokens.yaml
+  - include:
+      file: db/changelog/changes/006-add-user-role.yaml
+  - include:
+      file: db/changelog/changes/007-add-document-owner.yaml
+  - include:
+      file: db/changelog/changes/008-create-document-shares.yaml
